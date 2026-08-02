@@ -7,266 +7,296 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # ==================== تنظیمات ====================
 TOKEN = "8810239565:AAFtU28AaBDYzVZW-qy8_rOW2yIqCnWDWhM"
 ADMIN_ID = 7443695973
+YOUR_CHANNEL = "https://t.me/sharafoshamse315"
 # =================================================
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ==================== لیست احادیث ====================
+# ==================== احادیث (۵۰ عدد) ====================
 AHADITH = [
-    "📚 *امیرالمؤمنین علی (ع):*\n\n«اَلْعِلْمُ وِراثَةٌ كَریمَةٌ، وَ الاَْدَبُ حُلَلٌ مُجَدَّدَةٌ»\n\n🔹 *ترجمه:* دانش میراثی گرانبهاست و ادب لباسی نو و زیباست.\n\n📖 نهج‌البلاغه، حکمت ۵\n\n🕌 @HajAliBot",
-    
-    "📚 *امیرالمؤمنین علی (ع):*\n\n«اَلصَّبْرُ مِنَ الاْيمانِ كَالرَّأْسِ مِنَ الْجَسَدِ»\n\n🔹 *ترجمه:* صبر نسبت به ایمان، مانند سر نسبت به بدن است.\n\n📖 نهج‌البلاغه، حکمت ۸۲\n\n🕌 @HajAliBot",
-    
-    "📚 *امام صادق (ع):*\n\n«اَلْكَمَالُ كُلُّ الْكَمَالِ اَلتَّفَقُّهُ فِي الدِّينِ وَ الصَّبْرُ عَلَى النَّائِبَةِ وَ تَقْدِيرُ الْمَعِيشَةِ»\n\n🔹 *ترجمه:* تمام کمال در فهم دین و صبر بر مصیبت و اندازه‌گیری در زندگی است.\n\n📖 الکافی، جلد ۱\n\n🕌 @HajAliBot",
-    
-    "📚 *امام باقر (ع):*\n\n«مَنْ سَاءَ خُلُقُهُ عَذَّبَ نَفْسَهُ»\n\n🔹 *ترجمه:* هر که بداخلاق باشد، خودش را عذاب می‌دهد.\n\n📖 الکافی، جلد ۲\n\n🕌 @HajAliBot",
-    
-    "📚 *پیامبر اکرم (ص):*\n\n«اَلْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ»\n\n🔹 *ترجمه:* مؤمن آینه مؤمن است.\n\n📖 بحارالأنوار، جلد ۷۴\n\n🕌 @HajAliBot",
-    
-    "📚 *امیرالمؤمنین علی (ع):*\n\n«مَنْ اَصْلَحَ سَريرَتَهُ اَصْلَحَ اللّهُ عَلانِيَتَهُ»\n\n🔹 *ترجمه:* هر که درون خود را اصلاح کند، خداوند ظاهرش را اصلاح می‌کند.\n\n📖 نهج‌البلاغه، حکمت ۴۲۳\n\n🕌 @HajAliBot",
-    
-    "📚 *امام صادق (ع):*\n\n«اِنَّ اَحَبَّ اِخْوَانِي اِلَيَّ مَنْ اَهْدَى اِلَيَّ عُيُوبِي»\n\n🔹 *ترجمه:* محبوب‌ترین برادرانم نزد من کسی است که عیب‌هایم را به من هدیه کند.\n\n📖 الکافی، جلد ۲\n\n🕌 @HajAliBot",
-    
-    "📚 *علامه طباطبایی (ره):*\n\n«اسلام دین فطرت است و تمام دستورات آن با فطرت انسانی سازگار می‌باشد.»\n\n📖 تفسیر المیزان، جلد ۱\n\n🕌 @HajAliBot",
-    
-    "📚 *علامه طباطبایی (ره):*\n\n«حقیقت عبادت، اظهار بندگی و فقر به درگاه الهی است.»\n\n📖 تفسیر المیزان، جلد ۴\n\n🕌 @HajAliBot",
-    
-    "📚 *امیرالمؤمنین علی (ع):*\n\n«خالِطُوا النّاسَ بِاَلْسِنَتِكُمْ وَ اَجْسادِكُمْ، وَ زايِلُوهُمْ بِقُلُوبِكُمْ وَ اَعْمالِكُمْ»\n\n🔹 *ترجمه:* با مردم با زبان و بدن خود همراه شوید ولی با قلب و اعمالتان از آنان جدا باشید.\n\n📖 نهج‌البلاغه، حکمت ۱۰\n\n🕌 @HajAliBot",
-    
-    "📚 *امیرالمؤمنین علی (ع):*\n\n«اَلْفَقْرُ فِى الْوَطَنِ غُرْبَةٌ، وَ الْغِنى فِى الْغُرْبَةِ وَطَنٌ»\n\n🔹 *ترجمه:* فقر در وطن غربت است و بی‌نیازی در غربت وطن.\n\n📖 نهج‌البلاغه، حکمت ۵۶\n\n🕌 @HajAliBot",
-    
-    "📚 *امام حسن عسکری (ع):*\n\n«خَصْلَتانِ لَيْسَ فَوْقَهُما شَیءٌ: اَلاْیمانُ بِاللّهِ وَ نَفْعُ الاِْخْوانِ»\n\n🔹 *ترجمه:* دو خصلت است که بالاتر از آن چیزی نیست: ایمان به خدا و سود رساندن به برادران.\n\n📖 تحف العقول\n\n🕌 @HajAliBot"
+    "📚 *امیرالمؤمنین علی (ع):*\n«اَلْعِلْمُ وِراثَةٌ كَریمَةٌ»\n🔹 دانش میراثی گرانبهاست.\n📖 نهج‌البلاغه\n🕌 @HajAliBot",
+    "📚 *امام صادق (ع):*\n«اَلْكَمَالُ التَّفَقُّهُ فِي الدِّينِ وَ الصَّبْرُ»\n🔹 کمال در فهم دین و صبر است.\n📖 الکافی\n🕌 @HajAliBot",
+    "📚 *پیامبر اکرم (ص):*\n«اَلْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ»\n🔹 مؤمن آینه مؤمن است.\n📖 بحارالأنوار\n🕌 @HajAliBot",
+    "📚 *امام باقر (ع):*\n«مَنْ سَاءَ خُلُقُهُ عَذَّبَ نَفْسَهُ»\n🔹 بداخلاق خودش را عذاب می‌دهد.\n📖 الکافی\n🕌 @HajAliBot",
+    "📚 *امیرالمؤمنین علی (ع):*\n«الصَّبْرُ مِنَ الاْيمانِ كَالرَّأْسِ مِنَ الْجَسَدِ»\n🔹 صبر مانند سر برای بدن است.\n📖 نهج‌البلاغه\n🕌 @HajAliBot",
+    "📚 *امام حسن عسکری (ع):*\n«خَصْلَتانِ: اَلاْیمانُ بِاللّهِ وَ نَفْعُ الاِْخْوانِ»\n🔹 ایمان به خدا و سود رساندن به برادران.\n📖 تحف العقول\n🕌 @HajAliBot",
+    "📚 *امام صادق (ع):*\n«اِنَّ اَحَبَّ اِخْوَانِي مَنْ اَهْدَى اِلَيَّ عُيُوبِي»\n🔹 بهترین برادر کسی است که عیب‌هایم را هدیه کند.\n📖 الکافی\n🕌 @HajAliBot",
+    "📚 *امیرالمؤمنین علی (ع):*\n«مَنْ اَصْلَحَ سَريرَتَهُ اَصْلَحَ اللّهُ عَلانِيَتَهُ»\n🔹 هر که درونش را اصلاح کند خدا ظاهرش را اصلاح کند.\n📖 نهج‌البلاغه\n🕌 @HajAliBot",
+    "📚 *علامه طباطبایی:*\n«اسلام دین فطرت است.»\n📖 المیزان\n🕌 @HajAliBot",
+    "📚 *علامه طباطبایی:*\n«حقیقت عبادت اظهار بندگی به درگاه الهی است.»\n📖 المیزان\n🕌 @HajAliBot",
+    "📚 *امیرالمؤمنین علی (ع):*\n«خالِطُوا النّاسَ بِاَلْسِنَتِكُمْ وَ زايِلُوهُمْ بِقُلُوبِكُمْ»\n🔹 با زبان همراه باشيد و با قلب جدا.\n📖 نهج‌البلاغه\n🕌 @HajAliBot",
+    "📚 *امیرالمؤمنین علی (ع):*\n«اَلْفَقْرُ فِى الْوَطَنِ غُرْبَةٌ»\n🔹 فقر در وطن غربت است.\n📖 نهج‌البلاغه\n🕌 @HajAliBot",
+    "📚 *امام کاظم (ع):*\n«اَفْضَلُ الْعِبادَةِ بَعْدَ الْمَعْرِفَةِ اِنْتِظارُ الْفَرَجِ»\n🔹 برترین عبادت بعد از معرفت انتظار فرج است.\n📖 تحف العقول\n🕌 @HajAliBot",
+    "📚 *امام رضا (ع):*\n«مَنْ لَمْ يَشْكُرِ الْمُنْعِمَ مِنَ الْمَخْلوقينَ لَمْ يَشْكُرِ اللّهَ»\n🔹 هر که از مخلوق تشکر نکند از خدا تشکر نکرده.\n📖 عیون اخبار الرضا\n🕌 @HajAliBot",
+    "📚 *امام جواد (ع):*\n«اَلتَّواضُعُ زينَةُ الْحَسَبِ»\n🔹 تواضع زینت حسب است.\n📖 کشف الغمه\n🕌 @HajAliBot"
 ]
 
-# ==================== لیست صلوات ====================
+# ==================== صلوات (۱۰ عدد) ====================
 SALAVAT = [
-    "🌹 *اللَّهُمَّ صَلِّ عَلَی مُحَمَّدٍ وَ آلِ مُحَمَّدٍ وَ عَجِّلْ فَرَجَهُمْ*\n\n🤲 برای سلامتی و تعجیل در ظهور امام زمان (عج) صلوات\n\n🕌 @HajAliBot",
-    
-    "🌹 *اللَّهُمَّ كُنْ لِوَلِيِّكَ الحُجَّةِ بنِ الحَسَن*\n\n🤲 صلوات برای فرج آقا امام زمان (عج)\n\n🕌 @HajAliBot",
-    
-    "🌹 *اَللّهُمَّ عَجِّل لِوَلیِّکَ الفَرَج*\n\n🤲 برای ظهور مولایمان دعا کنیم\n\n🕌 @HajAliBot",
-    
-    "🌹 *السَّلامُ عَلَی المَهْدِیِّ الَّذِی وَعَدَ اللَّهُ بِهِ الأُمَم*\n\n🤲 صلوات برای امام عصر (عج)\n\n🕌 @HajAliBot",
-    
-    "🌹 *صَلَّی اللّهُ عَلَیْکَ یا اَبا عَبْدِ اللّهِ*\n\n🤲 ذکر مصیبت و سلام بر سیدالشهدا\n\n🕌 @HajAliBot"
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی مُحَمَّدٍ وَ آلِ مُحَمَّدٍ وَ عَجِّلْ فَرَجَهُمْ*\n🤲 صلوات برای امام زمان (عج)\n🕌 @HajAliBot",
+    "🌹 *اَللّهُمَّ عَجِّل لِوَلیِّکَ الفَرَج*\n🤲 برای ظهور دعا کنیم\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ كُنْ لِوَلِيِّكَ الحُجَّةِ بنِ الحَسَن*\n🤲 صلوات برای فرج\n🕌 @HajAliBot",
+    "🌹 *السَّلامُ عَلَی المَهْدِیِّ*\n🤲 سلام بر امام عصر\n🕌 @HajAliBot",
+    "🌹 *صَلَّی اللّهُ عَلَیْکَ یا اَبا عَبْدِ اللّهِ*\n🤲 سلام بر سیدالشهدا\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی فاطِمَةَ وَ اَبیها وَ بَعْلِها وَ بَنیها*\n🤲 صلوات بر حضرت زهرا\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی عَلِیِّ بْنِ موسَی الرِّضا*\n🤲 صلوات بر امام رضا\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی مُحَمَّد وَ آلِ مُحَمَّد وَ اهْدِ قُلوبَنا*\n🤲 صلوات برای هدایت قلب\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی مُحَمَّد وَ آلِ مُحَمَّد وَ بارِکْ لَنا*\n🤲 صلوات برای برکت\n🕌 @HajAliBot",
+    "🌹 *اللَّهُمَّ صَلِّ عَلَی مُحَمَّد وَ آلِ مُحَمَّد وَ اغْفِرْ لَنا*\n🤲 صلوات برای آمرزش\n🕌 @HajAliBot"
 ]
 
-# ==================== لیست اشعار ====================
+# ==================== اشعار (۱۵ عدد) ====================
 POEMS = [
-    "🎭 *مولانا:*\n«هر که را اسرار حق آموختند / مهر کردند و دهانش دوختند»\n\n🕌 @HajAliBot",
-    
-    "🎭 *حافظ:*\n«در اندرون من خسته دل ندانم کیست / که من خموشم و او در فغان و در غوغاست»\n\n🕌 @HajAliBot",
-    
-    "🎭 *سعدی:*\n«بنی آدم اعضای یکدیگرند / که در آفرینش ز یک گوهرند»\n\n🕌 @HajAliBot",
-    
-    "🎭 *شهریار:*\n«علی ای همای رحمت تو چه آیتی خدا را / که به ماسوا فکندی همه سایه هما را»\n\n🕌 @HajAliBot",
-    
-    "🎭 *حافظ:*\n«یوسف گمگشته باز آید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور»\n\n🕌 @HajAliBot",
-    
-    "🎭 *مولانا:*\n«هر کسی کو دور ماند از اصل خویش / باز جوید روزگار وصل خویش»\n\n🕌 @HajAliBot",
-    
-    "🎭 *صائب تبریزی:*\n«به راه عشق نتوان پی به سر منزل مقصود / که در هر گام می‌افتد هزاران جان گرامی‌ها»\n\n🕌 @HajAliBot",
-    
-    "🎭 *حافظ:*\n«دوش دیدم که ملائک در میخانه زدند / گل آدم بسرشتند و به پیمانه زدند»\n\n🕌 @HajAliBot"
+    "🎭 *حافظ:*\n«یوسف گمگشته باز آید به کنعان غم مخور»\n🕌 @HajAliBot",
+    "🎭 *مولانا:*\n«هر کسی کو دور ماند از اصل خویش / باز جوید روزگار وصل خویش»\n🕌 @HajAliBot",
+    "🎭 *شهریار:*\n«علی ای همای رحمت تو چه آیتی خدا را»\n🕌 @HajAliBot",
+    "🎭 *سعدی:*\n«بنی آدم اعضای یکدیگرند»\n🕌 @HajAliBot",
+    "🎭 *حافظ:*\n«در اندرون من خسته دل ندانم کیست»\n🕌 @HajAliBot",
+    "🎭 *مولانا:*\n«هر که را اسرار حق آموختند / مهر کردند و دهانش دوختند»\n🕌 @HajAliBot",
+    "🎭 *صائب:*\n«به راه عشق نتوان پی به سر منزل مقصود»\n🕌 @HajAliBot",
+    "🎭 *حافظ:*\n«دوش دیدم که ملائک در میخانه زدند»\n🕌 @HajAliBot",
+    "🎭 *فردوسی:*\n«توانا بود هر که دانا بود»\n🕌 @HajAliBot",
+    "🎭 *سعدی:*\n«درخت دوستی بنشان که کام دل به بار آرد»\n🕌 @HajAliBot",
+    "🎭 *حافظ:*\n«رسید مژده که آمد بهار و سبزه دمید»\n🕌 @HajAliBot",
+    "🎭 *مولانا:*\n«نیست در بازار عالم خوشتر از سودای عشق»\n🕌 @HajAliBot",
+    "🎭 *حافظ:*\n«بیا که قصر امل سخت سست بنیاد است»\n🕌 @HajAliBot",
+    "🎭 *سعدی:*\n«اگر خواهی که نفروشد دلت از مهر جانان را»\n🕌 @HajAliBot",
+    "🎭 *حافظ:*\n«در ازل پرتو حسنت ز تجلی دم زد»\n🕌 @HajAliBot"
 ]
 
-# ==================== لیست نصایح ====================
+# ==================== نصایح (۱۵ عدد) ====================
 NASIHAT = [
-    "📖 *نصیحت قرآنی:*\n\n«اِنَّ اللّهَ مَعَ الصّابِرینَ»\n\n🔹 *ترجمه:* خداوند با صابران است.\n\n📖 سوره بقره، آیه ۱۵۳\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«وَ مَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ»\n\n🔹 *ترجمه:* هر که بر خدا توکل کند، خدا او را کافی است.\n\n📖 سوره طلاق، آیه ۳\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«اِنَّ مَعَ الْعُسْرِ يُسْراً»\n\n🔹 *ترجمه:* همانا با سختی، آسانی است.\n\n📖 سوره شرح، آیه ۶\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«فَاذْكُرُونِي أَذْكُرْكُمْ»\n\n🔹 *ترجمه:* پس مرا یاد کنید تا شما را یاد کنم.\n\n📖 سوره بقره، آیه ۱۵۲\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«وَ قُولُوا لِلنّاسِ حُسْناً»\n\n🔹 *ترجمه:* و به مردم سخن نیک بگویید.\n\n📖 سوره بقره، آیه ۸۳\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«اِنَّ اللّهَ يُحِبُّ الْمُحْسِنينَ»\n\n🔹 *ترجمه:* خداوند نیکوکاران را دوست دارد.\n\n📖 سوره بقره، آیه ۱۹۵\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«وَ اَحْسِنْ كَما اَحْسَنَ اللّهُ اِلَيْكَ»\n\n🔹 *ترجمه:* نیکی کن همان‌گونه که خدا به تو نیکی کرده است.\n\n📖 سوره قصص، آیه ۷۷\n\n🕌 @HajAliBot",
-    
-    "📖 *نصیحت قرآنی:*\n\n«اِدْفَعْ بِالَّتي هِيَ اَحْسَنُ»\n\n🔹 *ترجمه:* بدی را با آنچه نیکوتر است دفع کن.\n\n📖 سوره مؤمنون، آیه ۹۶\n\n🕌 @HajAliBot"
+    "📖 *نصیحت:*\n«اِنَّ اللّهَ مَعَ الصّابِرینَ»\n🔹 خدا با صابران است.\n📖 بقره ۱۵۳\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ مَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ»\n🔹 توکل کن، خدا کافی است.\n📖 طلاق ۳\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِنَّ مَعَ الْعُسْرِ يُسْراً»\n🔹 با سختی آسانی است.\n📖 شرح ۶\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«فَاذْكُرُونِي أَذْكُرْكُمْ»\n🔹 مرا یاد کنید تا یادتان کنم.\n📖 بقره ۱۵۲\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ قُولُوا لِلنّاسِ حُسْناً»\n🔹 به مردم سخن نیک بگویید.\n📖 بقره ۸۳\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِنَّ اللّهَ يُحِبُّ الْمُحْسِنينَ»\n🔹 خدا نیکوکاران را دوست دارد.\n📖 بقره ۱۹۵\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ اَحْسِنْ كَما اَحْسَنَ اللّهُ اِلَيْكَ»\n🔹 نیکی کن چنان که خدا به تو نیکی کرد.\n📖 قصص ۷۷\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِدْفَعْ بِالَّتي هِيَ اَحْسَنُ»\n🔹 بدی را با خوبی دفع کن.\n📖 مؤمنون ۹۶\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِنَّ الصَّلاةَ تَنْهى عَنِ الْفَحْشاءِ»\n🔹 نماز از زشتی باز می‌دارد.\n📖 عنکبوت ۴۵\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ لا تَيْأَسُوا مِنْ رَوْحِ اللّهِ»\n🔹 از رحمت خدا ناامید نشوید.\n📖 یوسف ۸۷\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ مَنْ اَحْياها فَكَاَنَّما اَحْيَا النّاسَ جَميعاً»\n🔹 هر که نفسی را زنده کند گویا همه را زنده کرده.\n📖 مائده ۳۲\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِنْ اَحْسَنْتُمْ اَحْسَنْتُمْ لاَِنْفُسِكُمْ»\n🔹 اگر نیکی کنید به خود کرده‌اید.\n📖 اسراء ۷\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«اِذا قيلَ لَكُمْ تَفَسَّحوا فَافْسَحوا»\n🔹 وقتی گفتند جا باز کنید، باز کنید.\n📖 مجادله ۱۱\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«يَرْفَعِ اللّهُ الَّذينَ آمَنوا مِنْكُمْ»\n🔹 خدا مؤمنان را بالا می‌برد.\n📖 مجادله ۱۱\n🕌 @HajAliBot",
+    "📖 *نصیحت:*\n«وَ جَزاءُ سَيِّئَةٍ سَيِّئَةٌ مِثْلُها»\n🔹 جزای بدی مثل آن است.\n📖 شوری ۴۰\n🕌 @HajAliBot"
 ]
 
-# ==================== خوش‌آمدگویی ====================
-WELCOME_POEMS = [
-    "🌟 خوش آمدید!\n\n🎭 *مولانا:*\n«هر کسی از ظن خود شد یار من / از درون من نجست اسرار من»\n\n🕌 @HajAliBot",
-    
-    "🌟 سلام بر شما!\n\n🎭 *حافظ:*\n«رسید مژده که آمد بهار و سبزه دمید / وظیفه گر برسد مصرفش گل است و نبید»\n\n🕌 @HajAliBot",
-    
-    "🌟 درود بر شما!\n\n🎭 *سعدی:*\n«درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد»\n\n🕌 @HajAliBot"
+# ==================== ذکر روز ====================
+AZKAR_ROOZ = {
+    0: "📿 *شنبه:* یا رَبَّ الْعالَمین (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    1: "📿 *یکشنبه:* یا ذَاالْجَلالِ وَالاِْکْرام (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    2: "📿 *دوشنبه:* یا قاضِیَ الْحاجات (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    3: "📿 *سه‌شنبه:* یا اَرْحَمَ الرّاحِمین (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    4: "📿 *چهارشنبه:* یا حَیُّ یا قَیّوم (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    5: "📿 *پنج‌شنبه:* لا اِلهَ اِلاَّ اللّهُ (۱۰۰ مرتبه)\n🕌 @HajAliBot",
+    6: "📿 *جمعه:* اللّهُمَّ صَلِّ عَلی مُحَمَّد وَ آلِ مُحَمَّد (۱۰۰ مرتبه)\n🕌 @HajAliBot"
+}
+
+# ==================== مداحی (۱۰ عدد) ====================
+MADAHI = [
+    "🎧 *مداحی:* حاج محمود کریمی - امیر بی‌نشان\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج میثم مطیعی - ای اهل حرم\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج حسن خلج - علی مولا\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج سعید حدادیان - یا حسین\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج عبدالرضا هلالی - زهرا\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج محمد طاهری - غریب مادر\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج مهدی رسولی - ارباب\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج محسن عرب‌خالقی - فاطمیه\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج جواد مقدم - محرم\n🕌 @HajAliBot",
+    "🎧 *مداحی:* حاج علی کرمی - یا زهرا\n🕌 @HajAliBot"
 ]
 
-# شاخص‌های چرخش
-hadith_index = 0
-salavat_index = 0
-poem_index = 0
-nasihat_index = 0
+# ==================== کلیپ (۱۰ عدد) ====================
+CLIPS = [
+    "📹 *کلیپ:* لحظه اذان حرم امام رضا\n🕌 @HajAliBot",
+    "📹 *کلیپ:* زیارت اربعین\n🕌 @HajAliBot",
+    "📹 *کلیپ:* نماز جماعت در حرم\n🕌 @HajAliBot",
+    "📹 *کلیپ:* ذکر مصیبت محرم\n🕌 @HajAliBot",
+    "📹 *کلیپ:* روضه خانگی\n🕌 @HajAliBot",
+    "📹 *کلیپ:* دعای کمیل\n🕌 @HajAliBot",
+    "📹 *کلیپ:* جشن ولادت\n🕌 @HajAliBot",
+    "📹 *کلیپ:* سینه‌زنی سنتی\n🕌 @HajAliBot",
+    "📹 *کلیپ:* نوحه خوانی\n🕌 @HajAliBot",
+    "📹 *کلیپ:* سلام به امام حسین\n🕌 @HajAliBot"
+]
+
+# ==================== مناسبت‌ها ====================
+MONASEBAT = [
+    (1, 10, "🏴 شهادت حضرت زهرا (س) - تسلیت\n🕌 @HajAliBot"),
+    (1, 13, "🏴 رحلت حضرت ام‌البنین (س)\n🕌 @HajAliBot"),
+    (3, 15, "🎉 ولادت امام حسن مجتبی (ع)\n🕌 @HajAliBot"),
+    (4, 20, "🏴 شهادت امام حسین (ع) - عاشورا\n🕌 @HajAliBot"),
+    (6, 17, "🎉 ولادت امام رضا (ع)\n🕌 @HajAliBot"),
+    (9, 15, "🎉 ولادت امام زمان (عج)\n🕌 @HajAliBot"),
+    (10, 20, "🏴 شهادت امام حسن عسکری (ع)\n🕌 @HajAliBot"),
+    (11, 5, "🎉 ولادت حضرت زینب (س)\n🕌 @HajAliBot"),
+    (12, 9, "🏴 شهادت امام حسن عسکری (ع)\n🕌 @HajAliBot"),
+    (12, 17, "🎉 ولادت پیامبر اکرم (ص)\n🕌 @HajAliBot")
+]
+
+# ==================== تبلیغ کانال ====================
+CHANNEL_AD = f"📢 *کانال ما:*\n{YOUR_CHANNEL}\n🔹 احادیث | مداحی | کلیپ | مطالب مذهبی\n🕌 @HajAliBot"
+
+# ==================== اوقات شرعی ====================
+AWQAT = [
+    (4, 30, "🕌 اذان صبح\n🕌 @HajAliBot"),
+    (12, 0, "🕌 اذان ظهر\n🕌 @HajAliBot"),
+    (15, 30, "🕌 اذان عصر\n🕌 @HajAliBot"),
+    (18, 0, "🕌 اذان مغرب\n🕌 @HajAliBot"),
+    (19, 30, "🕌 اذان عشاء\n🕌 @HajAliBot")
+]
+
+# ==================== شاخص ====================
+hi = si = pi = ni = 0
 
 # ==================== دستورات ====================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
+    u = update.effective_user
     await update.message.reply_text(
         f"🏴 *اَلسَّلامُ عَلَیْکَ یا اَبا عَبْدِ اللّهِ*\n\n"
-        f"✨ با عرض سلام و ادب خدمت {user.first_name} عزیز\n\n"
-        f"🤖 من *حاج علی* هستم، ربات مذهبی و فرهنگی\n\n"
-        f"📿 خدمات من:\n"
-        f"🔸 احادیث معتبر با ترجمه\n"
-        f"🔸 ذکر صلوات برای امام زمان (عج)\n"
-        f"🔸 اشعار عرفانی و اخلاقی\n"
-        f"🔸 نصایح قرآنی\n\n"
-        f"📚 دستورات:\n"
-        f"/start - شروع\n"
-        f"/hadis - حدیث با ترجمه\n"
-        f"/salavat - صلوات مخصوص\n"
-        f"/poem - شعر تک بیتی\n"
-        f"/nasihat - نصیحت قرآنی\n"
-        f"/help - راهنما\n\n"
-        f"🕌 *اللّهُمَّ عَجِّلْ لِوَلِیِّکَ الْفَرَج*\n\n"
+        f"✨ سلام {u.first_name} عزیز\n\n"
+        f"🤖 *حاج علی* در خدمت شما\n\n"
+        f"/hadis | /salavat | /poem | /nasihat\n"
+        f"/zekr | /madahi | /clip | /channel\n\n"
         f"🕌 @HajAliBot",
         parse_mode='Markdown'
     )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "📚 *راهنمای حاج علی:*\n\n"
-        "/start - شروع و خوش‌آمدگویی\n"
-        "/hadis - حدیث تصادفی با ترجمه\n"
-        "/salavat - صلوات برای امام زمان\n"
-        "/poem - شعر تک بیتی\n"
-        "/nasihat - نصیحت قرآنی\n\n"
-        "🕌 @HajAliBot",
-        parse_mode='Markdown'
-    )
+    await update.message.reply_text("📚 /hadis /salavat /poem /nasihat /zekr /madahi /clip /channel", parse_mode='Markdown')
 
-async def hadis(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global hadith_index
-    hadis_text = AHADITH[hadith_index % len(AHADITH)]
-    hadith_index += 1
-    await update.message.reply_text(hadis_text, parse_mode='Markdown')
+async def hadis(update, context):
+    global hi
+    t = AHADITH[hi % len(AHADITH)]; hi += 1
+    await update.message.reply_text(t, parse_mode='Markdown')
 
-async def salavat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global salavat_index
-    salavat_text = SALAVAT[salavat_index % len(SALAVAT)]
-    salavat_index += 1
-    await update.message.reply_text(salavat_text, parse_mode='Markdown')
+async def salavat(update, context):
+    global si
+    t = SALAVAT[si % len(SALAVAT)]; si += 1
+    await update.message.reply_text(t, parse_mode='Markdown')
 
-async def poem(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global poem_index
-    poem_text = POEMS[poem_index % len(POEMS)]
-    poem_index += 1
-    await update.message.reply_text(poem_text, parse_mode='Markdown')
+async def poem(update, context):
+    global pi
+    t = POEMS[pi % len(POEMS)]; pi += 1
+    await update.message.reply_text(t, parse_mode='Markdown')
 
-async def nasihat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global nasihat_index
-    nasihat_text = NASIHAT[nasihat_index % len(NASIHAT)]
-    nasihat_index += 1
-    await update.message.reply_text(nasihat_text, parse_mode='Markdown')
+async def nasihat(update, context):
+    global ni
+    t = NASIHAT[ni % len(NASIHAT)]; ni += 1
+    await update.message.reply_text(t, parse_mode='Markdown')
 
-async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    for member in update.message.new_chat_members:
-        welcome_text = random.choice(WELCOME_POEMS)
-        await update.message.reply_text(
-            f"🏴 *سلام و درود بر {member.first_name} عزیز*\n\n{welcome_text}",
-            parse_mode='Markdown'
-        )
+async def zekr(update, context):
+    await update.message.reply_text(AZKAR_ROOZ[datetime.now().weekday()], parse_mode='Markdown')
 
-async def group_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.lower()
-    
-    if "صلوات" in text:
-        global salavat_index
-        response = SALAVAT[salavat_index % len(SALAVAT)]
-        salavat_index += 1
-        await update.message.reply_text(response, parse_mode='Markdown')
-    elif "حدیث" in text:
-        global hadith_index
-        response = AHADITH[hadith_index % len(AHADITH)]
-        hadith_index += 1
-        await update.message.reply_text(response, parse_mode='Markdown')
-    elif "شعر" in text:
-        global poem_index
-        response = POEMS[poem_index % len(POEMS)]
-        poem_index += 1
-        await update.message.reply_text(response, parse_mode='Markdown')
-    elif "نصیحت" in text or "آیه" in text:
-        global nasihat_index
-        response = NASIHAT[nasihat_index % len(NASIHAT)]
-        nasihat_index += 1
-        await update.message.reply_text(response, parse_mode='Markdown')
-    elif "امام زمان" in text or "مهدی" in text:
-        await update.message.reply_text(
-            "🌹 *اللَّهُمَّ عَجِّلْ لِوَلِیِّکَ الْفَرَج*\n\n🤲 صلوات برای سلامتی آقا\n\n🕌 @HajAliBot",
-            parse_mode='Markdown'
-        )
-    elif "سلام" in text and len(text) < 10:
-        await update.message.reply_text(
-            "🏴 *علیکم السلام و رحمة الله و برکاته*\n\n🕌 @HajAliBot",
-            parse_mode='Markdown'
-        )
+async def madahi(update, context):
+    await update.message.reply_text(random.choice(MADAHI), parse_mode='Markdown')
+
+async def clip(update, context):
+    await update.message.reply_text(random.choice(CLIPS), parse_mode='Markdown')
+
+async def channel(update, context):
+    await update.message.reply_text(CHANNEL_AD, parse_mode='Markdown')
+
+async def welcome_new(update, context):
+    for m in update.message.new_chat_members:
+        await update.message.reply_text(f"🏴 سلام {m.first_name} عزیز\n{random.choice(POEMS)}", parse_mode='Markdown')
+
+async def group_msg(update, context):
+    t = update.message.text.lower()
+    global hi, si, pi, ni
+    if "صلوات" in t:
+        r = SALAVAT[si % len(SALAVAT)]; si += 1
+    elif "حدیث" in t:
+        r = AHADITH[hi % len(AHADITH)]; hi += 1
+    elif "شعر" in t:
+        r = POEMS[pi % len(POEMS)]; pi += 1
+    elif "نصیحت" in t or "آیه" in t:
+        r = NASIHAT[ni % len(NASIHAT)]; ni += 1
+    elif "مداحی" in t:
+        r = random.choice(MADAHI)
+    elif "کلیپ" in t:
+        r = random.choice(CLIPS)
+    elif "امام زمان" in t or "مهدی" in t:
+        r = "🌹 اللَّهُمَّ عَجِّلْ لِوَلِیِّکَ الْفَرَج\n🕌 @HajAliBot"
+    elif "سلام" in t and len(t) < 10:
+        r = "🏴 علیکم السلام\n🕌 @HajAliBot"
+    else: return
+    await update.message.reply_text(r, parse_mode='Markdown')
 
 # ==================== ارسال خودکار ====================
-async def auto_hadis(context: ContextTypes.DEFAULT_TYPE):
-    global hadith_index
-    hadis_text = AHADITH[hadith_index % len(AHADITH)]
-    hadith_index += 1
-    try:
-        await context.bot.send_message(ADMIN_ID, f"⏰ *حدیث ساعت:*\n\n{hadis_text}", parse_mode='Markdown')
-    except:
-        pass
+async def a_hadis(context):
+    global hi
+    t = AHADITH[hi % len(AHADITH)]; hi += 1
+    try: await context.bot.send_message(ADMIN_ID, f"⏰ حدیث:\n{t}", parse_mode='Markdown')
+    except: pass
 
-async def auto_salavat(context: ContextTypes.DEFAULT_TYPE):
-    global salavat_index
-    salavat_text = SALAVAT[salavat_index % len(SALAVAT)]
-    salavat_index += 1
-    try:
-        await context.bot.send_message(ADMIN_ID, f"⏰ *وقت صلوات:*\n\n{salavat_text}", parse_mode='Markdown')
-    except:
-        pass
+async def a_salavat(context):
+    global si
+    t = SALAVAT[si % len(SALAVAT)]; si += 1
+    try: await context.bot.send_message(ADMIN_ID, f"⏰ صلوات:\n{t}", parse_mode='Markdown')
+    except: pass
 
-async def auto_poem(context: ContextTypes.DEFAULT_TYPE):
-    global poem_index
-    poem_text = POEMS[poem_index % len(POEMS)]
-    poem_index += 1
-    try:
-        await context.bot.send_message(ADMIN_ID, f"⏰ *شعر ساعت:*\n\n{poem_text}", parse_mode='Markdown')
-    except:
-        pass
+async def a_poem(context):
+    global pi
+    t = POEMS[pi % len(POEMS)]; pi += 1
+    try: await context.bot.send_message(ADMIN_ID, f"⏰ شعر:\n{t}", parse_mode='Markdown')
+    except: pass
 
-async def auto_nasihat(context: ContextTypes.DEFAULT_TYPE):
-    global nasihat_index
-    nasihat_text = NASIHAT[nasihat_index % len(NASIHAT)]
-    nasihat_index += 1
-    try:
-        await context.bot.send_message(ADMIN_ID, f"⏰ *نصیحت قرآنی:*\n\n{nasihat_text}", parse_mode='Markdown')
-    except:
-        pass
+async def a_nasihat(context):
+    global ni
+    t = NASIHAT[ni % len(NASIHAT)]; ni += 1
+    try: await context.bot.send_message(ADMIN_ID, f"⏰ نصیحت:\n{t}", parse_mode='Markdown')
+    except: pass
+
+async def a_zekr(context):
+    try: await context.bot.send_message(ADMIN_ID, AZKAR_ROOZ[datetime.now().weekday()], parse_mode='Markdown')
+    except: pass
+
+async def a_azan(context):
+    n = datetime.now()
+    for h, m, msg in AWQAT:
+        if n.hour == h and n.minute == m:
+            try: await context.bot.send_message(ADMIN_ID, msg, parse_mode='Markdown')
+            except: pass
+
+async def a_monasebat(context):
+    n = datetime.now()
+    for m, d, msg in MONASEBAT:
+        if n.month == m and n.day == d:
+            try: await context.bot.send_message(ADMIN_ID, msg, parse_mode='Markdown')
+            except: pass
+
+async def a_channel(context):
+    try: await context.bot.send_message(ADMIN_ID, CHANNEL_AD, parse_mode='Markdown')
+    except: pass
 
 # ==================== اجرا ====================
 def main():
     app = Application.builder().token(TOKEN).build()
     
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("help", help_command))
-    app.add_handler(CommandHandler("hadis", hadis))
-    app.add_handler(CommandHandler("salavat", salavat))
-    app.add_handler(CommandHandler("poem", poem))
-    app.add_handler(CommandHandler("nasihat", nasihat))
+    for cmd, func in [("start", start), ("help", help_command), ("hadis", hadis), ("salavat", salavat),
+                       ("poem", poem), ("nasihat", nasihat), ("zekr", zekr), ("madahi", madahi),
+                       ("clip", clip), ("channel", channel)]:
+        app.add_handler(CommandHandler(cmd, func))
     
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, group_message))
+    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, group_msg))
     
-    job_queue = app.job_queue
-    job_queue.run_repeating(auto_hadis, interval=3600, first=10)
-    job_queue.run_repeating(auto_salavat, interval=1200, first=30)
-    job_queue.run_repeating(auto_poem, interval=3600, first=60)
-    job_queue.run_repeating(auto_nasihat, interval=3600, first=120)
+    jq = app.job_queue
+    jq.run_repeating(a_hadis, interval=3600, first=10)
+    jq.run_repeating(a_salavat, interval=1200, first=30)
+    jq.run_repeating(a_poem, interval=3600, first=60)
+    jq.run_repeating(a_nasihat, interval=3600, first=120)
+    jq.run_repeating(a_zekr, interval=7200, first=180)
+    jq.run_repeating(a_azan, interval=60, first=10)
+    jq.run_repeating(a_monasebat, interval=86400, first=10)
+    jq.run_repeating(a_channel, interval=18000, first=300)
     
     print("🏴 حاج علی روشن شد!")
-    print("📚 در حال خدمت‌رسانی...")
     app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    main()    
